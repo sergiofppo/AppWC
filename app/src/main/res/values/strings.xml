@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">App WC</string>
+    <string name="app_name">Aplicativo Copa do Mundo</string>
+    <string name="navigation_drawer_open">Abrir menu lateral</string>
+    <string name="navigation_drawer_close">Fechar menu lateral</string>
+
+    <string name="welcome_title">Olá, Torcedor!</string>
+    <string name="welcome_subtitle">Acompanhe tabelas, jogos e placares em tempo real.</string>
+    <string name="menu_placar">Placar</string>
+    <string name="menu_tabelas">Tabelas</string>
+    <string name="menu_estadios">Estádios</string>
+    <string name="menu_jogos">Jogos</string>
 </resources>
