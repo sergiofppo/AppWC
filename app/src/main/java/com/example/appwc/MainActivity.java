@@ -88,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         cardEstadios.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, EstadiosActivity.class));
+            // Alterado para abrir o nosso novo ecrã com os dados do SQLite
+            startActivity(new Intent(MainActivity.this, DetalhaEstadioActivity.class));
         });
     }
 }

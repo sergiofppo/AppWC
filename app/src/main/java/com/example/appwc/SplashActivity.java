@@ -1,11 +1,9 @@
 package com.example.appwc;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.VideoView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -14,29 +12,28 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
-
+        // Verifique se o nome do seu layout de splash é este mesmo:
         setContentView(R.layout.activity_splash);
 
-        VideoView videoView = findViewById(R.id.videoView);
+        // Adiciona um pequeno atraso (ex: 2 segundos) para mostrar a marca da Copa
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.splash_video;
-        videoView.setVideoURI(Uri.parse(videoPath));
+            // Instancia o Model para consultar o SQLite
+            ConfiguracaoModel model = new ConfiguracaoModel(this);
+            ConfiguracaoPojo config = model.obterConfiguracao();
 
-        videoView.start();
-
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                Intent intent = new Intent(SplashActivity.this, SelectLanguageActivity.class);
-                startActivity(intent);
-
-
-                finish();
+            // Lógica de verificação da 8ª iteração
+            if (config != null && config.getLingua() != null) {
+                // Já existe uma língua selecionada, carrega diretamente a aplicação
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            } else {
+                // Não existe língua, obriga o utilizador a escolher
+                startActivity(new Intent(SplashActivity.this, SelectLanguageActivity.class));
             }
-        }, 5000);
+
+            // Encerra a Splash para que o botão de "Voltar" do Android não a reabra
+            finish();
+
+        }, 2000); // 2000 milissegundos = 2 segundos
     }
 }
