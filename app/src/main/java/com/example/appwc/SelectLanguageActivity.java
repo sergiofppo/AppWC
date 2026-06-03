@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
+import java.util.List;
 
 public class SelectLanguageActivity extends AppCompatActivity {
 
@@ -14,37 +15,39 @@ public class SelectLanguageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_language);
-        setTitle("Selecione o Idioma / Select Language");
 
         ListView listViewIdiomas = findViewById(R.id.listViewIdiomas);
 
-        // Os idiomas que estão no seu ecrã
-        String[] idiomasExibicao = {"Português", "English", "Español", "Français", "Deutsch", "Italiano", "العربية", "日本語", "中文", "Nederlands", "Русский", "한국어"};
+        // 1. Busca os idiomas diretamente do Banco de Dados usando o Model
+        LinguaModel linguaModel = new LinguaModel(this);
+        List<LinguaPojo> listaIdiomasBanco = linguaModel.getTodasLinguas();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        // 2. Preenche a ListView com os dados do banco
+        // O ArrayAdapter vai usar aquele método toString() que criamos no LinguaPojo para mostrar os nomes
+        ArrayAdapter<LinguaPojo> adapter = new ArrayAdapter<>(
                 this,
                 R.layout.item_idioma,
                 R.id.textIdioma,
-                idiomasExibicao
+                listaIdiomasBanco
         );
         listViewIdiomas.setAdapter(adapter);
 
-        // --- LÓGICA DA 7ª ITERAÇÃO ---
+        // 3. Lógica do clique (7ª iteração dos slides)
         listViewIdiomas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Descobre qual idioma foi clicado
-                String linguaEscolhida = idiomasExibicao[position];
+                // Descobre qual objeto LinguaPojo foi clicado
+                LinguaPojo linguaSelecionada = listaIdiomasBanco.get(position);
 
-                // Instancia o Model e grava a configuração na base de dados SQLite
-                ConfiguracaoModel model = new ConfiguracaoModel(SelectLanguageActivity.this);
-                model.salvarLingua(linguaEscolhida);
+                // Grava a configuração no banco de dados
+                ConfiguracaoModel configModel = new ConfiguracaoModel(SelectLanguageActivity.this);
+                configModel.salvarLingua(linguaSelecionada.getNome());
 
-                // Carrega o próximo ecrã via Intent
+                // Redireciona para o menu principal
                 Intent intent = new Intent(SelectLanguageActivity.this, MainActivity.class);
                 startActivity(intent);
 
-                // Fecha este ecrã para limpar o histórico de navegação
+                // Finaliza esta tela
                 finish();
             }
         });
